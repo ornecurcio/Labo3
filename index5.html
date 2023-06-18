@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Formulario Lista</title>
+	<style>
+		#form_datos {
+			background-color: rgba(224, 32, 214, 0.479);
+			padding: 20px;
+			border-radius: 10px;
+		}
+
+		#formABM {
+			margin: 0px auto 10px auto;
+			padding: 20px;
+			background-color: rgba(245, 191, 227, 0.61);
+			border-radius: 10px;
+			text-align: left;
+		}
+
+		#form_datos,
+		#form_ABM {
+
+			margin: 0 auto;
+			display: inline-block;
+			text-align: left;
+		}
+
+		body {
+			max-width: 1100px;
+			font-family: Arial, sans-serif;
+			margin: 0 auto;
+			padding: 30px;
+			flex-direction: column;
+			position: relative;
+			text-align: center;
+			background-color: rgba(245, 191, 227, 0.281);
+		}
+
+		label[for="txtNombre"],
+		label[for="txtApellido"],
+		label[for="txtEdad"] {
+			font-weight: bold;
+		}
+
+		input:required {
+			border-color: red;
+		}
+
+		.error-message {
+			color: red;
+			font-style: italic;
+			font-size: 12px;
+			margin-top: 5px;
+		}
+
+		table,
+		td,
+		th {
+			border: 1px solid black;
+		}
+
+		td,
+		th {
+			padding: 5px;
+		}
+
+		thead {
+			background-color: rgb(0, 255, 106);
+		}
+
+		table {
+			width: 700px;
+			border-radius: 10px;
+			border-collapse: collapse;
+			position: relative;
+			text-align: center;
+		}
+
+		tbody tr:hover {
+			background-color: rgba(78, 212, 107, 0.534);
+		}
+
+		button {
+			background-color: rgb(86, 86, 240);
+			padding: 10px;
+			border-radius: 30px;
+			width: 120px;
+			margin-top: 10px;
+			margin-bottom: 5px;
+		}
+
+		input,
+		select {
+			background-color: rgb(253, 253, 253);
+			border: 1;
+			border-radius: 10px;
+			padding: 5px;
+			margin-bottom: 3px;
+		}
+
+		select {
+			width: 80%;
+		}
+
+		.error-message {
+			color: red;
+			font-style: italic;
+			font-size: 12px;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="formDatos">
+		<form id="form_datos">
+			<h1>Formulario Lista</h1>
+			<table id="tabla_datos">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Nombre</th>
+						<th>Apellido</th>
+						<th>Edad</th>
+						<th>Alter Ego</th>
+						<th>Ciudad</th>
+						<th>Publicado</th>
+						<th>Enemigo</th>
+						<th>Robos</th>
+						<th>Asesinatos</th>
+						<th>Modificar</th>
+						<th>Eliminar</th>
+					</tr>
+				</thead>
+				<tbody id="tablaBody">
+					<!-- Filas de elementos se agregarán dinámicamente aquí -->
+				</tbody>
+			</table>
+		</form>
+		<br>
+		<button id="btnAgregar">Agregar Elemento</button>
+	</div>
+	<br>
+	<div id="spinner-container" class="container"></div>
+	<br>
+	<div id="form_ABM">
+		<form id="formABM">
+			<header id="abmHeader" style="text-align: center; font-weight: bold; font-size: 30px;"></header>
+			<label for="id">ID:</label>
+			<input type="text" id="txtId" readonly>
+			<br>
+			<label for="nombre">Nombre:</label>
+			<input type="text" id="txtNombre">
+			<p class="error-message"></p>
+			<br>
+			<label for="apellido">Apellido:</label>
+			<input type="text" id="txtApellido">
+			<p class="error-message"></p>
+			<br>
+			<label for="edad">Edad:</label>
+			<input type="text" id="txtEdad">
+			<p class="error-message"></p>
+			<br>
+			<label for="tipo">Tipo:</label>
+			<select id="selecTipo">
+				<option value="persona">Persona</option>
+				<option value="heroe">Heroe</option>
+				<option value="villano">Villano</option>
+			</select>
+			<br>
+			<label id="lblAtributo1" for="txtAtributo1">Atributo1</label>
+			<input type="text" id="txtAtributo1">
+			<p class="error-message"></p>
+			<br>
+			<label id="lblAtributo2" for="txtAtributo2">Atributo2</label>
+			<input type="text" id="txtAtributo2">
+			<p class="error-message"></p>
+			<br>
+			<label id="lblAtributo3" for="txtAtributo3">Atributo3</label>
+			<input type="text" id="txtAtributo3">
+			<p class="error-message"></p>
+			<br>
+			<button type="button" id="btnAceptar">Aceptar</button>
+			<button type="button" id="btnCancelar">Cancelar</button>
+		</form>
+	</div>
+	<script>
+		// ------------------Clases-------------------//
+		class Persona {
+			constructor(id, nombre, apellido, edad) {
+				this.id = id;
+				this.nombre = nombre;
+				this.apellido = apellido;
+				this.edad = edad;
+			}
+		}
+
+		class Heroe extends Persona {
+			constructor(id, nombre, apellido, edad, alterego, ciudad, publicado) {
+				super(id, nombre, apellido, edad);
+				this.alterego = alterego;
+				this.ciudad = ciudad;
+				this.publicado = publicado;
+			}
+		}
+
+		class Villano extends Persona {
+			constructor(id, nombre, apellido, edad, enemigo, robos, asesinatos) {
+				super(id, nombre, apellido, edad);
+				this.enemigo = enemigo;
+				this.robos = robos;
+				this.asesinatos = asesinatos;
+			}
+		}
+
+		//----------------CONSTANTES----------------//
+		const form = $('form_datos');
+		const form_div = $('formDatos')
+		const tabla = $('tabla_datos');
+		const agregarBtn = $('btnAgregar');
+		const aceptarBtn = $('btnAceptar');
+		const cancelarBtn = $('btnCancelar');
+		const id = $('txtId');
+		const label1 = $('lblAtributo1');
+		const label2 = $('lblAtributo2');
+		const label3 = $('lblAtributo3');
+		const input1 = $('txtAtributo1');
+		const input2 = $('txtAtributo2');
+		const input3 = $('txtAtributo3');
+		const formABM = $('formABM');
+		const filtroTipo = $('selecTipo');
+		const formulario = document.forms[1];
+		const controles = formulario.elements;
+		const divSpinner = $("spinner-container");
+		var listaPersonas = [];
+		var bandera = 1;
+		//------------------Eventos-------------------------------//
+
+
+		window.addEventListener("load", () => {
+			obtenerListaDesdeAPI()
+		});
+		// const btnModificar = document.getElementById("btnModificar");
+		// 	btnModificar.click(event) => {
+		// 	event.preventDefault(); // Evitar que el formulario se envíe o se recargue la página
+		// 	mostrarFormAbm();
+		// 	ocultarFormDatos()
+		// };
+		// tabla.onload = () => {
+		// 	// Cargar la tabla y los elementos asociados
+		// 	llenarTabla();
+		// };
+		// document.addEventListener("DOMContentLoaded", function() {
+		//     obtenerListaDesdeAPI();
+		// 	mostrarFormDatos()
+		//     ocultarFormAbm();
+		// });
+		//----------------FUNCIONES----------------//
+		function $(id) {
+			return document.getElementById(id);
+		}
+		function ocultarFormDatos() {
+			form.style.display = 'none';
+			agregarBtn.style.display = 'none';
+		}
+		function ocultarFormAbm() {
+			formABM.style.display = 'none';
+		}
+		function mostrarFormAbm() {
+			formABM.style.display = 'block';
+		}
+		function mostrarFormDatos() {
+			form.style.display = 'block';
+			agregarBtn.style.display = 'block';
+		}
+		function removeAllChildNodes(parent) {
+			while (parent.firstChild) {
+				parent.removeChild(parent.firstChild);
+			}
+		}
+		function primeraVez() {
+			if (bandera) {
+				obtenerListaDesdeAPI()
+				ocultarFormAbm()
+				mostrarFormDatos()
+				bandera = 0
+			}
+		}
+		function llenarTablaLoad() {
+			const tableBody = document.querySelector("#tabla_datos tbody");
+			tableBody.innerHTML = '';
+
+			listaPersonas.forEach(elemento => {
+				const row = document.createElement("tr");
+
+				const tdId = document.createElement("td");
+				tdId.textContent = elemento.id;
+				row.appendChild(tdId);
+
+				const tdNombre = document.createElement("td");
+				tdNombre.textContent = elemento.nombre;
+				row.appendChild(tdNombre);
+
+				const tdApellido = document.createElement("td");
+				tdApellido.textContent = elemento.apellido;
+				row.appendChild(tdApellido);
+
+				const tdEdad = document.createElement("td");
+				tdEdad.textContent = elemento.edad;
+				row.appendChild(tdEdad);
+
+				const tdAlterEgo = document.createElement("td");
+				tdAlterEgo.textContent = elemento instanceof Heroe ? elemento.alterego : "N/A";
+				row.appendChild(tdAlterEgo);
+
+				const tdCiudad = document.createElement("td");
+				tdCiudad.textContent = elemento instanceof Heroe ? elemento.ciudad : "N/A";
+				row.appendChild(tdCiudad);
+
+				const tdPublicado = document.createElement("td");
+				tdPublicado.textContent = elemento instanceof Heroe ? elemento.publicado : "N/A";
+				row.appendChild(tdPublicado);
+
+				const tdEnemigo = document.createElement("td");
+				tdEnemigo.textContent = elemento instanceof Villano ? elemento.enemigo : "N/A";
+				row.appendChild(tdEnemigo);
+
+				const tdRobos = document.createElement("td");
+				tdRobos.textContent = elemento instanceof Villano ? elemento.robos : "N/A";
+				row.appendChild(tdRobos);
+
+				const tdAsesinatos = document.createElement("td");
+				tdAsesinatos.textContent = elemento instanceof Villano ? elemento.asesinatos : "N/A";
+				row.appendChild(tdAsesinatos);
+
+				const tdModificar = document.createElement("td");
+				const btnModificar = document.createElement("button");
+				btnModificar.textContent = "Modificar";
+				btnModificar.setAttribute("id", "btnModificarUNO");
+				btnModificar.addEventListener("click", () => {
+					// modificarElemento2(elemento.id);
+					removeAllChildNodes(tabla)
+					llenarTabla()
+					console.log("Hola")
+					ocultarFormDatos()
+					mostrarFormAbm()
+				});
+				tdModificar.appendChild(btnModificar);
+				row.appendChild(tdModificar);
+
+				const tdEliminar = document.createElement("td");
+				const btnEliminar = document.createElement("button");
+				btnEliminar.textContent = "Eliminar";
+				btnEliminar.setAttribute("id", "btnEliminar");
+				tdEliminar.appendChild(btnEliminar);
+				row.appendChild(tdEliminar);
+
+				tableBody.appendChild(row);
+			});
+		}
+		function llenarTabla() {
+			let table = document.createElement("tabla_datos"); // Crear el elemento <table>
+
+			// Crear el elemento <thead> y la fila de encabezado
+			let thead = document.createElement("thead");
+			let headerRow = document.createElement("tr");
+
+			// Crear los elementos <th> y asignarles el texto correspondiente
+			let headers = ["ID", "Nombre", "Apellido", "Edad", "Alter Ego", "Ciudad", "Publicado", "Enemigo", "Robos", "Asesinatos", "Modificar", "Eliminar"];
+			for (let i = 0; i < headers.length; i++) {
+				let headerCell = document.createElement("th");
+				headerCell.textContent = headers[i];
+				headerRow.appendChild(headerCell);
+			}
+
+			// Agregar la fila de encabezado al thead
+			thead.appendChild(headerRow);
+
+			// Agregar el thead a la tabla
+			table.appendChild(thead);
+
+			// Crear el elemento <tbody>
+			let tbody = document.createElement("tbody");
+
+			// Recorrer los datos y crear las filas y celdas correspondientes
+			listaPersonas.forEach(elemento => {
+				const row = document.createElement("tr");
+
+				const tdId = document.createElement("td");
+				tdId.textContent = elemento.id;
+				row.appendChild(tdId);
+
+				const tdNombre = document.createElement("td");
+				tdNombre.textContent = elemento.nombre;
+				row.appendChild(tdNombre);
+
+				const tdApellido = document.createElement("td");
+				tdApellido.textContent = elemento.apellido;
+				row.appendChild(tdApellido);
+
+				const tdEdad = document.createElement("td");
+				tdEdad.textContent = elemento.edad;
+				row.appendChild(tdEdad);
+
+				const tdAlterEgo = document.createElement("td");
+				tdAlterEgo.textContent = elemento instanceof Heroe ? elemento.alterego : "N/A";
+				row.appendChild(tdAlterEgo);
+
+				const tdCiudad = document.createElement("td");
+				tdCiudad.textContent = elemento instanceof Heroe ? elemento.ciudad : "N/A";
+				row.appendChild(tdCiudad);
+
+				const tdPublicado = document.createElement("td");
+				tdPublicado.textContent = elemento instanceof Heroe ? elemento.publicado : "N/A";
+				row.appendChild(tdPublicado);
+
+				const tdEnemigo = document.createElement("td");
+				tdEnemigo.textContent = elemento instanceof Villano ? elemento.enemigo : "N/A";
+				row.appendChild(tdEnemigo);
+
+				const tdRobos = document.createElement("td");
+				tdRobos.textContent = elemento instanceof Villano ? elemento.robos : "N/A";
+				row.appendChild(tdRobos);
+
+				const tdAsesinatos = document.createElement("td");
+				tdAsesinatos.textContent = elemento instanceof Villano ? elemento.asesinatos : "N/A";
+				row.appendChild(tdAsesinatos);
+
+				const tdModificar = document.createElement("td");
+				const btnModificar = document.createElement("button");
+				btnModificar.textContent = "Modificar";
+				btnModificar.setAttribute("id", "btnModificar");
+				btnModificar.addEventListener("click", () => {
+					console.log("lala")
+					// event.preventDefault()
+					// modificarElemento2(elemento.id);
+					console.log("Hola")
+					ocultarFormDatos()
+					mostrarFormAbm()
+
+				});
+				tdModificar.appendChild(btnModificar);
+				row.appendChild(tdModificar);
+
+				const tdEliminar = document.createElement("td");
+				const btnEliminar = document.createElement("button");
+				btnEliminar.textContent = "Eliminar";
+				btnEliminar.setAttribute("id", "btnEliminar");
+				tdEliminar.appendChild(btnEliminar);
+				row.appendChild(tdEliminar);
+
+				tbody.appendChild(row);
+			});
+
+			// Agregar el tbody a la tabla
+			table.appendChild(tbody);
+
+			// Agregar la tabla al elemento con el ID "contenedorTabla" (cámbialo por el ID de tu contenedor)
+			var container = document.getElementById("form_datos");
+			container.appendChild(table);
+		}
+
+
+		// ------------------API-------------------//
+		function obtenerListaDesdeAPI() {
+			setSpinner(divSpinner);
+			const xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function () {
+
+				if (xhr.readyState == 4) {
+					if (xhr.status === 200) {
+						clearSpinner(divSpinner);
+						const response = JSON.parse(xhr.responseText);
+
+						// Generar la lista en memoria a partir de la respuesta JSON
+						listaPersonas = response.map(obj => {
+							if (obj.hasOwnProperty('ciudad') && obj.hasOwnProperty('publicado')) {
+								return new Heroe(obj.id, obj.nombre, obj.apellido, obj.edad, obj.alterego, obj.ciudad, obj.publicado);
+							} else if (obj.hasOwnProperty('enemigo') && obj.hasOwnProperty('robos') && obj.hasOwnProperty('asesinatos')) {
+								return new Villano(obj.id, obj.nombre, obj.apellido, obj.edad, obj.enemigo, obj.robos, obj.asesinatos);
+							} else {
+								return new Persona(obj.id, obj.nombre, obj.apellido, obj.edad);
+							}
+						});
+						// Mostrar el formulario lista con la lista generada en memoria
+						llenarTablaLoad();
+					}
+					else {
+						// Mostrar una advertencia por pantalla en caso de error
+						console.log(`Error ${xhr.status} - ${xhr.statusText}`);
+					}
+				}
+			};
+			xhr.open('GET', 'http://localhost:8222/PersonasHeroesVillanos.php', true);
+			xhr.send();
+		}
+		const setSpinner = (div) => {
+			//document.getElementById("spinner").style.display = "flex";
+			const img = document.createElement("img");
+			img.setAttribute("src", "spinner2.gif");
+			img.setAttribute("alt", "spinner");
+			div.appendChild(img);
+		};
+
+		const clearSpinner = (div) => {
+			while (div.hasChildNodes()) {
+				div.removeChild(div.firstChild);
+			}
+		};
+	</script>
+</body>
+
+</html>

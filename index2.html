@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Formulario Lista</title>
+    <style>
+        #form_datos {
+            background-color: rgba(224, 32, 214, 0.479);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        #formABM {
+            margin: 0px auto 10px auto;
+            padding: 20px;
+            background-color: rgba(245, 191, 227, 0.61);
+            border-radius: 10px;
+            text-align: left;
+        }
+
+        #form_datos,
+        #form_ABM {
+
+            margin: 0 auto;
+            display: inline-block;
+            text-align: left;
+        }
+
+        body {
+            max-width: 1100px;
+            font-family: Arial, sans-serif;
+            margin: 0 auto;
+            padding: 30px;
+            flex-direction: column;
+            position: relative;
+            text-align: center;
+            background-color: rgba(245, 191, 227, 0.281);
+        }
+
+        label[for="txtNombre"],
+        label[for="txtApellido"],
+        label[for="txtEdad"] {
+            font-weight: bold;
+        }
+
+        input:required {
+            border-color: red;
+        }
+
+        .error-message {
+            color: red;
+            font-style: italic;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+
+        table,
+        td,
+        th {
+            border: 1px solid black;
+        }
+
+        td,
+        th {
+            padding: 5px;
+        }
+
+        thead {
+            background-color: rgb(0, 255, 106);
+        }
+
+        table {
+            width: 700px;
+            border-radius: 10px;
+            border-collapse: collapse;
+            position: relative;
+            text-align: center;
+        }
+
+        tbody tr:hover {
+            background-color: rgba(78, 212, 107, 0.534);
+        }
+
+        button {
+            background-color: rgb(86, 86, 240);
+            padding: 10px;
+            border-radius: 30px;
+            width: 120px;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+
+        input,
+        select {
+            background-color: rgb(253, 253, 253);
+            border: 1;
+            border-radius: 10px;
+            padding: 5px;
+            margin-bottom: 3px;
+        }
+
+        select {
+            width: 80%;
+        }
+
+        .error-message {
+            color: red;
+            font-style: italic;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div id="formDatos">
+        <form id="form_datos">
+            <h1>Formulario Lista</h1>
+            <table id="tabla_datos">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nombre</th>
+                        <th>Apellido</th>
+                        <th>Edad</th>
+                        <th>Alter Ego</th>
+                        <th>Ciudad</th>
+                        <th>Publicado</th>
+                        <th>Enemigo</th>
+                        <th>Robos</th>
+                        <th>Asesinatos</th>
+                        <th>Modificar</th>
+                        <th>Eliminar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filas de elementos se agregarán dinámicamente aquí -->
+                </tbody>
+            </table>
+            <br>
+        </form>
+        <button id="btnAgregar">Agregar Elemento</button>
+    </div>
+    <br>
+    <!-- <div id="spinner" style="display: none;">
+        <div id="spinner-overlay"></div>
+        <div id="spinner-container">
+            <div class="spinner"></div>
+        </div>
+    </div> -->
+    <div id="spinner-container" class="container"></div>
+    <br>
+    <!-- Formulario formABM -->
+    <div id="form_ABM">
+        <form id="formABM">
+            <header id="abmHeader" style="text-align: center; font-weight: bold; font-size: 30px;"></header>
+            <label for="id">ID:</label>
+            <input type="text" id="txtId" readonly>
+            <br>
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="txtNombre">
+            <p class="error-message"></p>
+            <br>
+            <label for="apellido">Apellido:</label>
+            <input type="text" id="txtApellido">
+            <p class="error-message"></p>
+            <br>
+            <label for="edad">Edad:</label>
+            <input type="text" id="txtEdad">
+            <p class="error-message"></p>
+            <br>
+            <label for="tipo">Tipo:</label>
+            <select id="selecTipo">
+                <option value="persona">Persona</option>
+                <option value="heroe">Heroe</option>
+                <option value="villano">Villano</option>
+            </select>
+            <br>
+            <label id="lblAtributo1" for="txtAtributo1">Atributo1</label>
+            <input type="text" id="txtAtributo1">
+            <p class="error-message"></p>
+            <br>
+            <label id="lblAtributo2" for="txtAtributo2">Atributo2</label>
+            <input type="text" id="txtAtributo2">
+            <p class="error-message"></p>
+            <br>
+            <label id="lblAtributo3" for="txtAtributo3">Atributo3</label>
+            <input type="text" id="txtAtributo3">
+            <p class="error-message"></p>
+            <br>
+            <button type="button" id="btnAceptar">Aceptar</button>
+            <button type="button" id="btnCancelar">Cancelar</button>
+        </form>
+    </div>
+    <script>
+        // ------------------Clases-------------------//
+        class Persona {
+            constructor(id, nombre, apellido, edad) {
+                this.id = id;
+                this.nombre = nombre;
+                this.apellido = apellido;
+                this.edad = edad;
+            }
+        }
+
+        class Heroe extends Persona {
+            constructor(id, nombre, apellido, edad, alterego, ciudad, publicado) {
+                super(id, nombre, apellido, edad);
+                this.alterego = alterego;
+                this.ciudad = ciudad;
+                this.publicado = publicado;
+            }
+        }
+
+        class Villano extends Persona {
+            constructor(id, nombre, apellido, edad, enemigo, robos, asesinatos) {
+                super(id, nombre, apellido, edad);
+                this.enemigo = enemigo;
+                this.robos = robos;
+                this.asesinatos = asesinatos;
+            }
+        }
+
+
+        //----------------CONSTANTES----------------//
+        const form = $('form_datos');
+        const div_tabla = $('div_tabla')
+        const tabla = $('tabla_datos');
+        const id = $('txtId');
+        const agregarBtn = $('btnAgregar');
+        const cancelarBtn = $('btnCancelar');
+        const aceptarBtn = $('btnAceptar');
+        const modificarAceptarBtn = $('btnModificarAceptar');
+        const eliminarAceptarBtn = $('btnEliminarAceptar');
+        const label1 = $('lblAtributo1');
+        const label2 = $('lblAtributo2');
+        const label3 = $('lblAtributo3');
+        const input1 = $('txtAtributo1');
+        const input2 = $('txtAtributo2');
+        const input3 = $('txtAtributo3');
+        const formABM = $('formABM');
+        const filtroTipo = $('selecTipo');
+        const formulario = document.forms[1];
+        const controles = formulario.elements;
+        const divSpinner = $("spinner-container");
+        var listaPersonas = [];
+        const botonesEliminar = document.querySelectorAll('#btnEliminar');
+        
+        //------------------Eventos-------------------------------//
+
+        window.addEventListener("load", () => {
+            obtenerListaDesdeAPI();
+            ocultarFormAbm();
+        });
+
+        agregarBtn.addEventListener('click', () => {
+            mostrarFormularioABM("Alta");
+            ocultarFormDatos();
+        });
+
+        filtroTipo.addEventListener('change', () => {
+            cambiarLabels();
+        });
+
+        aceptarBtn.addEventListener('click', (e) => {
+            if (validarFormulario()) {
+                header = e.target.parentNode.firstElementChild.innerText
+                switch(header){
+                    case "Alta" : 
+                        altaElemento();
+                        break; 
+                    case "Modificación":
+                        modificarElemento();
+                        break; 
+                    case "Baja":
+                        eliminarElemento();
+                        break;
+                }
+            }       
+        });
+        cancelarBtn.addEventListener('click', () => {
+            ocultarFormAbm();
+            mostrarFormDatos();
+            llenarTablaLoad();
+        });
+
+        function modificarUno(id){
+            removeAllChildNodes(tabla)
+            ocultarFormDatos();
+            mostrarFormularioABM("Modificación");
+            cargarFormABM(encontrarElementoXID(id));            
+        }
+
+        function eliminarUno(id){
+            removeAllChildNodes(tabla)
+            ocultarFormDatos();
+            mostrarFormularioABM("Baja");
+            cargarFormABM(encontrarElementoXID(id));            
+        }
+
+        //------------------FUNCIONES-------------------------------//
+        function $(id) {
+			return document.getElementById(id);
+		}
+
+		function ocultarFormDatos() {
+			form.style.display = 'none';
+			agregarBtn.style.display = 'none';
+		}
+
+		function ocultarFormAbm() {
+			formABM.style.display = 'none';
+		}
+
+		function mostrarFormAbm() {
+			formABM.style.display = 'block';
+		}
+
+		function mostrarFormDatos() {
+			form.style.display = 'block';
+			agregarBtn.style.display = 'block';
+		}
+
+        function removeAllChildNodes(parent) {
+			while (parent.firstChild) {
+				parent.removeChild(parent.firstChild);
+			}
+		}
+
+        function llenarTablaLoad() {
+            // Rellenar la tabla con los elementos
+            const tableBody = document.querySelector("#tabla_datos tbody");
+            const columnas = ["ID", "Nombre", "Apellido", "Edad", "Alter Ego", "Ciudad", "Publicado", "Enemigo", "Robos", "Asesinatos", "Modificar", "Eliminar"];
+            let tablaHTML = '<thead><tr>';
+                columnas.forEach(columna => {
+                tablaHTML += `<th>${columna}</th>`;
+            });
+            tablaHTML += '<tbody>';
+            listaPersonas.forEach(persona => {
+                tablaHTML += '<tr>';
+                    tablaHTML += `<td>${persona.id}</td>`;
+                    tablaHTML += `<td>${persona.nombre}</td>`;
+                    tablaHTML += `<td>${persona.apellido}</td>`;
+                    tablaHTML += `<td>${persona.edad}</td>`;
+                    tablaHTML += `<td>${persona instanceof Heroe ? persona.alterego : "N/A"}</td>`;
+                    tablaHTML += `<td>${persona instanceof Heroe ? persona.ciudad : "N/A"}</td>`;
+                    tablaHTML += `<td>${persona instanceof Heroe ? persona.publicado : "N/A"}</td>`;
+                    tablaHTML += `<td>${persona instanceof Villano ? persona.enemigo : "N/A"}</td>`;
+                    tablaHTML += `<td>${persona instanceof Villano? persona.robos : "N/A"}</td>`;
+                    tablaHTML += `<td>${persona instanceof Villano ? persona.asesinatos : "N/A"}</td>`;
+                    tablaHTML += `<td><button onclick="modificarUno(${persona.id})">Modificar</button></td>
+                          <td><button onclick="eliminarUno(${persona.id})">Eliminar</button></td>`;
+                    tablaHTML += '</tr>';
+            });
+            tablaHTML += '</tbody>';
+            tabla.innerHTML = tablaHTML;
+        }
+      
+        function mostrarFormularioABM(accion) {
+            mostrarFormAbm()
+            formABM.reset();
+            // Configurar encabezado
+            $("abmHeader").textContent = accion;
+
+            if (accion === "Alta") {
+                $("txtId").disabled = true;
+                $('selecTipo').disabled = false;
+            } else if (accion === "Modificación") {
+                $("txtId").disabled = true;
+                $('selecTipo').disabled = true;
+            } else if (accion === "Baja") {
+                $("txtId").disabled = true;
+                $('selecTipo').disabled = true;
+            }
+        }
+
+        function encontrarElementoXID(id){
+            return listaPersonas.find((elem) => elem.id === id);
+        }
+
+        function validarFormulario() {
+            const {
+                txtId,
+                txtNombre,
+                txtApellido,
+                txtEdad,
+                selecTipo,
+                txtAtributo1,
+                txtAtributo2,
+                txtAtributo3,
+            } = controles;
+            if (txtNombre.value.trim() === '') {
+                txtNombre.classList.add('error');
+                txtNombre.nextElementSibling.textContent = 'El Nombre es obligatorio';
+                return false;
+            } else {
+                txtNombre.classList.remove('error');
+                txtNombre.nextElementSibling.textContent = '';
+            }
+
+            if (txtApellido.value.trim() === '') {
+                txtApellido.classList.add('error');
+                txtApellido.nextElementSibling.textContent = 'El Apellido es obligatorio';
+                return false;
+            } else {
+                txtApellido.classList.remove('error');
+                txtApellido.nextElementSibling.textContent = '';
+            }
+
+            if (txtEdad.value.trim() === '' || isNaN(txtEdad.value) || txtEdad.value < 15) {
+                txtEdad.classList.add('error');
+                txtEdad.nextElementSibling.textContent = 'La Edad debe ser un número mayor a 15';
+                return false;
+            } else {
+                txtEdad.classList.remove('error');
+                txtEdad.nextElementSibling.textContent = '';
+            }
+
+            if (selecTipo.value == 'heroe') {
+                if (txtAtributo1.value.trim() === '') {
+                    txtAtributo1.classList.add('error');
+                    txtAtributo1.nextElementSibling.textContent = 'El alterego es obligatorio'
+                } else {
+                    txtAtributo1.classList.remove('error');
+                    txtAtributo1.nextElementSibling.textContent = '';
+                }
+                if (txtAtributo2.value.trim() === '') {
+                    txtAtributo2.classList.add('error');
+                    txtAtributo2.nextElementSibling.textContent = 'La Ciudad es obligatoria'
+                } else {
+                    txtAtributo2.classList.remove('error');
+                    txtAtributo2.nextElementSibling.textContent = '';
+                }
+                if (txtAtributo3.value.trim() === '' || isNaN(txtAtributo3.value) || txtAtributo3.value < 1940) {
+                    txtAtributo3.classList.add('error');
+                    txtAtributo3.nextElementSibling.textContent = 'La Publicacion debe ser mayor a 1940'
+                } else {
+                    txtAtributo3.classList.remove('error');
+                    txtAtributo3.nextElementSibling.textContent = '';
+                }
+
+            }
+            if (selecTipo.value == 'villano') {
+                if (txtAtributo1.value.trim() === '') {
+                    txtAtributo1.classList.add('error');
+                    txtAtributo1.nextElementSibling.textContent = 'El Enemigo es obligatorio'
+                } else {
+                    txtAtributo1.classList.remove('error');
+                    txtAtributo1.nextElementSibling.textContent = '';
+                }
+                if (txtAtributo2.value.trim() === '' || isNaN(txtAtributo2.value) || txtAtributo2.value < 0) {
+                    txtAtributo2.classList.add('error');
+                    txtAtributo2.nextElementSibling.textContent = 'El Robo es obligatorio y mayor a cero'
+                } else {
+                    txtAtributo2.classList.remove('error');
+                    txtAtributo2.nextElementSibling.textContent = '';
+                }
+                if (txtAtributo3.value.trim() === '' || isNaN(txtAtributo3.value) || txtAtributo3.value < 0) {
+                    txtAtributo3.classList.add('error');
+                    txtAtributo3.nextElementSibling.textContent = 'Los asesinatos son obligatorios y mayor a cero'
+                } else {
+                    txtAtributo3.classList.remove('error');
+                    txtAtributo3.nextElementSibling.textContent = '';
+                }
+            }
+
+            return true;
+        }
+
+        function mostrarCamposHeroe() {
+            label1.textContent = "Alterego";
+            label2.textContent = "Ciudad";
+            label3.textContent = "Publicado";
+            input1.style.display = "flex";
+            input2.style.display = "flex";
+            input3.style.display = "flex";
+        }
+
+        function mostrarCamposVillano() {
+            label1.textContent = "Enemigo";
+            label2.textContent = "Robos";
+            label3.textContent = "Asesinatos";
+            input1.style.display = "flex";
+            input2.style.display = "flex";
+            input3.style.display = "flex";
+        }
+
+        function mostrarCamposPersona() {
+            label1.textContent = "No Corresponde";
+            label2.textContent = "No Corresponde";
+            label3.textContent = "No Corresponde";
+            input1.style.display = "none";
+            input2.style.display = "none";
+            input3.style.display = "none";
+        }
+
+        function cambiarLabels() {
+            if (selecTipo.value == 'heroe') {
+                mostrarCamposHeroe();
+            } else if (selecTipo.value == 'villano') {
+                mostrarCamposVillano();
+            } else {
+                mostrarCamposPersona();
+            }
+        }
+
+        function cargarFormABM(elemento) {
+            const {
+                txtId,
+                txtNombre,
+                txtApellido,
+                txtEdad,
+                selecTipo,
+                txtAtributo1,
+                txtAtributo2,
+                txtAtributo3,
+            } = controles;
+
+            // Mostrar solo los campos correspondientes al tipo de elemento
+            if (elemento instanceof Heroe) {
+                mostrarCamposHeroe();
+            } else if (elemento instanceof Villano) {
+                mostrarCamposVillano();
+            } else {
+                mostrarCamposPersona();
+            }
+
+            // Asignar los valores correspondientes a los campos del formulario
+            txtId.value = elemento.id;
+            txtNombre.value = elemento.nombre;
+            txtApellido.value = elemento.apellido;
+            txtEdad.value = elemento.edad;
+
+            if (elemento instanceof Heroe) {
+                filtroTipo.value = 'heroe';
+                txtAtributo1.value = elemento.alterego;
+                txtAtributo2.value = elemento.ciudad;
+                txtAtributo3.value = elemento.publicado;
+            } else if (elemento instanceof Villano) {
+                filtroTipo.value = 'villano';
+                txtAtributo1.value = elemento.enemigo;
+                txtAtributo2.value = elemento.robos;
+                txtAtributo3.value = elemento.asesinatos;
+            }
+        }
+
+        function esperarAceptarCancelar() {
+            return new Promise((resolve) => {
+                const btnAceptar = document.getElementById("btnAceptar");
+                const btnCancelar = document.getElementById("btnCancelar");
+
+                btnAceptar.addEventListener("click", () => {
+                    resolve(true);
+                });
+
+                btnCancelar.addEventListener("click", () => {
+                    resolve(false);
+                });
+            });
+        }
+
+        const setSpinner = (div) => {
+            //document.getElementById("spinner").style.display = "flex";
+            const img = document.createElement("img");
+            img.setAttribute("src", "spinner2.gif");
+            img.setAttribute("alt", "spinner");
+            div.appendChild(img);
+        };
+        
+        const clearSpinner = (div) => {
+            while (div.hasChildNodes()) {
+                div.removeChild(div.firstChild);
+            }
+        };
+
+        // ------------------API-------------------//
+		function obtenerListaDesdeAPI() {
+			setSpinner(divSpinner);
+			const xhr = new XMLHttpRequest();
+			xhr.onreadystatechange = function () {
+
+				if (xhr.readyState == 4) {
+					if (xhr.status === 200) {
+						clearSpinner(divSpinner);
+						const response = JSON.parse(xhr.responseText);
+
+						// Generar la lista en memoria a partir de la respuesta JSON
+						listaPersonas = response.map(obj => {
+							if (obj.hasOwnProperty('ciudad') && obj.hasOwnProperty('publicado')) {
+								return new Heroe(obj.id, obj.nombre, obj.apellido, obj.edad, obj.alterego, obj.ciudad, obj.publicado);
+							} else if (obj.hasOwnProperty('enemigo') && obj.hasOwnProperty('robos') && obj.hasOwnProperty('asesinatos')) {
+								return new Villano(obj.id, obj.nombre, obj.apellido, obj.edad, obj.enemigo, obj.robos, obj.asesinatos);
+							} else {
+								return new Persona(obj.id, obj.nombre, obj.apellido, obj.edad);
+							}
+						});
+						// Mostrar el formulario lista con la lista generada en memoria
+						llenarTablaLoad();
+					}
+					else {
+						// Mostrar una advertencia por pantalla en caso de error
+						console.log(`Error ${xhr.status} - ${xhr.statusText}`);
+					}
+				}
+			};
+			xhr.open('GET', 'http://localhost:8222/PersonasHeroesVillanos.php', true);
+			xhr.send();
+		}
+
+         // Función para enviar la solicitud de alta al API
+         function altaElemento() {
+            const {
+                txtId,
+                txtNombre,
+                txtApellido,
+                txtEdad,
+                selecTipo,
+                txtAtributo1,
+                txtAtributo2,
+                txtAtributo3,
+            } = controles;
+
+            let elemento = {
+                id: 0
+            };
+            let objeto = {}
+            if (selecTipo.value == 'heroe') {
+                elemento = {
+                    nombre: txtNombre.value,
+                    apellido: txtApellido.value,
+                    edad: txtEdad.value,
+                    alterego: txtAtributo1.value,
+                    ciudad: txtAtributo2.value,
+                    publicado: txtAtributo3.value
+                };
+                objeto = new Heroe(id, elemento.nombre, elemento.apellido, elemento.edad, elemento.alterego, elemento.ciudad, elemento.publicado)
+            } else if (selecTipo.value == 'villano') {
+                elemento = {
+                    nombre: txtNombre.value,
+                    apellido: txtApellido.value,
+                    edad: txtEdad.value,
+                    enemigo: txtAtributo1.value,
+                    robos: txtAtributo2.value,
+                    asesinatos: txtAtributo3.value
+                };
+                objeto = new Villano(id, elemento.nombre, elemento.apellido, elemento.edad, elemento.enemigo, elemento.robos, elemento.asesinatos)
+            } else {
+                elemento = {
+                    nombre: txtNombre.value,
+                    apellido: txtApellido.value,
+                    edad: txtEdad.value
+                };
+                objeto = new Persona(id, elemento.nombre, elemento.apellido, elemento.edad)
+            }
+
+            const jsonElemento = JSON.stringify(elemento);
+            setSpinner(divSpinner);
+            formABM.style.display = 'none';
+
+            fetch('http://localhost:8222/PersonasHeroesVillanos.php', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonElemento
+            })
+                .then((response) => {
+                    if (response.ok) {
+                        console.log("Responce json: " + response.json)
+                        return response.json();
+                    } else {
+                        throw new Error('Error al realizar el alta');
+                    }
+                })
+                .then(function (data) {
+                    console.log("Data.id: " + data.id)
+                    // Actualizar el ID con el valor provisto en la respuesta
+                    objeto.id = data.id;
+
+                    // Insertar el nuevo elemento en la lista
+                    listaPersonas.push(objeto);
+                    console.log(listaPersonas)
+                    // Ocultar el contenedor "Spinner"
+                    clearSpinner(divSpinner);
+
+                    // Ocultar "Formulario ABM" 
+                    ocultarFormAbm();
+                    mostrarFormDatos()
+                    llenarTablaLoad()
+
+                })
+                .catch(function (error) {
+                    // Mostrar una advertencia en caso de error
+                    alert('Error al realizar el alta: ' + error.message);
+
+                    // Ocultar el contenedor "Spinner"
+                    clearSpinner(divSpinner);
+
+                    // Ocultar "Formulario ABM" y mostrar "Formulario Lista"
+                    ocultarFormAbm();
+                });
+        }
+
+        async function modificarElemento() {
+        const {
+            txtId,
+            txtNombre,
+            txtApellido,
+            txtEdad,
+            selecTipo,
+            txtAtributo1,
+            txtAtributo2,
+            txtAtributo3,
+        } = controles;
+
+        // Construir el objeto a enviar al servidor
+        let objetoModificado = {
+            id: txtId.value,
+            nombre: txtNombre.value,
+            apellido: txtApellido.value,
+            edad: txtEdad.value,
+        };
+        if (selecTipo.value == 'heroe') {
+            objetoModificado = {
+                id: txtId.value,
+                nombre: txtNombre.value,
+                apellido: txtApellido.value,
+                edad: txtEdad.value,
+                alterego: txtAtributo1.value,
+                ciudad: txtAtributo2.value,
+                publicado: txtAtributo3.value
+            };
+        } else if (selecTipo.value == 'villano') {
+            objetoModificado = {
+                id: txtId.value,
+                nombre: txtNombre.value,
+                apellido: txtApellido.value,
+                edad: txtEdad.value,
+                enemigo: txtAtributo1.value,
+                robos: txtAtributo2.value,
+                asesinatos: txtAtributo3.value
+            };
+        } else {
+            objetoModificado = {
+                nombre: txtNombre.value,
+                apellido: txtApellido.value,
+                edad: txtEdad.value
+            };
+        }
+
+        const jsonElemento = JSON.stringify(objetoModificado);
+         setSpinner(divSpinner);
+        // formABM.style.display = 'none';
+        ocultarFormAbm()
+        const index = listaPersonas.findIndex((persona) => persona.id == txtId.value);
+        try {
+            const response = await fetch('http://localhost:8222/PersonasHeroesVillanos.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(objetoModificado),
+            });
+            if (response.ok) {
+                
+                // const data = await response.json();
+
+                // Actualizar el ID con el valor provisto en la respuesta
+               
+                // listaPersonas[index].id = txtId.value;
+
+                // Actualizar el elemento en la lista
+                listaPersonas[index].nombre = objetoModificado.nombre;
+                listaPersonas[index].apellido = objetoModificado.apellido;
+                listaPersonas[index].edad = objetoModificado.edad;
+
+                if (listaPersonas[index] instanceof Heroe) {
+                    listaPersonas[index].alterego = txtAtributo1.value;
+                    listaPersonas[index].ciudad = txtAtributo2.value;
+                    listaPersonas[index].publicado = txtAtributo3.value;
+                } else if (listaPersonas[index] instanceof Villano) {
+                    listaPersonas[index].enemigo = txtAtributo1.value;
+                    listaPersonas[index].robos = txtAtributo2.value;
+                    listaPersonas[index].asesinatos = txtAtributo3.value;
+                }
+                console.log(listaPersonas)
+                // console.log()
+                // removeAllChildNodes(form)
+                llenarTablaLoad()
+                // Ocultar el contenedor "Spinner"
+                clearSpinner(divSpinner);
+
+                ocultarFormAbm();
+                mostrarFormDatos()
+                // mostrarFormularioLista(listaPersonas);
+            } else {
+                throw new Error('Error al realizar la modificación');
+            }
+        } catch (error) {
+            // Mostrar una advertencia en caso de error
+            alert('Error al realizar la modificación: ' + error.message);
+
+            // Ocultar el contenedor "Spinner"
+            clearSpinner(divSpinner);
+
+            // Ocultar "Formulario ABM" y mostrar "Formulario Lista"
+            ocultarFormAbm();
+            mostrarFormDatos()
+            llenarTablaLoad(listaPersonas);
+        }
+    }
+
+    async function eliminarElemento() {
+        const {
+            txtId,
+            txtNombre,
+            txtApellido,
+            txtEdad,
+            selecTipo,
+            txtAtributo1,
+            txtAtributo2,
+            txtAtributo3,
+        } = controles;
+
+        // Construir el objeto a enviar al servidor
+        let objetoModificado = {
+            id: txtId.value,
+            nombre: txtNombre.value,
+            apellido: txtApellido.value,
+            edad: txtEdad.value,
+        };
+        if (selecTipo.value == 'heroe') {
+            objetoModificado = {
+                id: txtId.value,
+                nombre: txtNombre.value,
+                apellido: txtApellido.value,
+                edad: txtEdad.value,
+                alterego: txtAtributo1.value,
+                ciudad: txtAtributo2.value,
+                publicado: txtAtributo3.value
+            };
+        } else if (selecTipo.value == 'villano') {
+            objetoModificado = {
+                id: txtId.value,
+                nombre: txtNombre.value,
+                apellido: txtApellido.value,
+                edad: txtEdad.value,
+                enemigo: txtAtributo1.value,
+                robos: txtAtributo2.value,
+                asesinatos: txtAtributo3.value
+            };
+        } else {
+            objetoModificado = {
+                nombre: txtNombre.value,
+                apellido: txtApellido.value,
+                edad: txtEdad.value
+            };
+        }
+
+        const jsonElemento = JSON.stringify(objetoModificado);
+         setSpinner(divSpinner);
+        ocultarFormAbm()
+        const index = listaPersonas.findIndex((persona) => persona.id == txtId.value);
+        try {
+            const response = await fetch('http://localhost:8222/PersonasHeroesVillanos.php', {
+                method: 'DELETE',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(objetoModificado),
+            });
+            if (response.ok) {
+                
+                const data = await response.text();
+                console.log(data)
+
+                // Actualizar el elemento en la lista
+                listaPersonas.splice(index,1);
+                console.log(listaPersonas)
+
+                llenarTablaLoad()
+
+                // Ocultar el contenedor "Spinner"
+                clearSpinner(divSpinner);
+
+                mostrarFormDatos()
+                // mostrarFormularioLista(listaPersonas);
+            } else {
+                throw new Error('Error al realizar la baja');
+            }
+        } catch (error) {
+            // Mostrar una advertencia en caso de error
+            alert('Error al realizar la baja: ' + error.message);
+
+            // Ocultar el contenedor "Spinner"
+            clearSpinner(divSpinner);
+
+            // Ocultar "Formulario ABM" y mostrar "Formulario Lista"
+            ocultarFormAbm();
+            mostrarFormDatos()
+            llenarTablaLoad(listaPersonas);
+        }
+    }
+
+        
+    </script>
+</body>
+
+</html>
